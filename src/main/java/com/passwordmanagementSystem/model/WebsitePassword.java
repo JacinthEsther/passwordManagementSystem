@@ -12,7 +12,6 @@ import org.springframework.data.annotation.Id;
 public class WebsitePassword {
      @UniqueElements
     private String websiteUserName;
-
     private String url;
     private String websitePassword;
 
