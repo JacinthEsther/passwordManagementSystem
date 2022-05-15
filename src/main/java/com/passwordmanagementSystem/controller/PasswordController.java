@@ -24,7 +24,7 @@ public class PasswordController {
     SitePasswordService passwordService;
 
 
-    @PostMapping ("/login")
+    @PostMapping ("/addPassword")
     public ResponseEntity<?> accountCreationResponse( @RequestBody Password request){
 //    log.info(createAccount.toString());
         try{

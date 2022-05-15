@@ -46,7 +46,7 @@ SitePasswordService passwordService;
         request.setUsername("JayEst");
         request.setUrl("https:facebook.com");
         request.setEmail("agbonirojacinta@gmail.com");
-        request.setUserPassword("JayEst1-");
+//        request.setUserPassword("JayEst1-");
 
         passwordService.createAccount(request);
 
@@ -70,7 +70,7 @@ SitePasswordService passwordService;
         request.setUsername("JayEst");
         request.setUrl("https:facebook.com");
         request.setEmail("agbonirojacinta@gmail.com");
-        request.setUserPassword("JayEst1-");
+//        request.setUserPassword("JayEst1-");
 
 
 
@@ -112,7 +112,7 @@ SitePasswordService passwordService;
         request1.setUsername("JayJay");
         request1.setUrl("https:instagram.com");
         request1.setEmail("agbonirojacinta@gmail.com");
-        request1.setUserPassword("JayEst1-");
+//        request1.setUserPassword("JayEst1-");
 
 
         passwordService.createAccount(request);
@@ -142,7 +142,7 @@ SitePasswordService passwordService;
         request.setUsername("JayEst");
         request.setUrl("https:facebook.com");
         request.setEmail("agbonirojacinta@gmail.com");
-        request.setUserPassword("JayEst1-");
+//        request.setUserPassword("JayEst1-");
 
         passwordService.createAccount(request);
 
@@ -174,7 +174,7 @@ SitePasswordService passwordService;
         request.setUsername("JayEst");
         request.setUrl("https:facebook.com");
         request.setEmail("agbonirojacinta@gmail.com");
-        request.setUserPassword("JayEst1-");
+//        request.setUserPassword("JayEst1-");
 
         LoginDetails loginDetails = new LoginDetails();
         loginDetails.setEmail("agbonirojacinta@gmail.com");

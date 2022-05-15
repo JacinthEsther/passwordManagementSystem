@@ -6,6 +6,7 @@ import com.passwordmanagementSystem.dtos.requests.passwordRequests.Password;
 import com.passwordmanagementSystem.dtos.requests.userRequests.LoginDetails;
 import com.passwordmanagementSystem.dtos.requests.userRequests.UpdateUserPasswordRequest;
 import com.passwordmanagementSystem.dtos.requests.userRequests.UserRequest;
+import com.passwordmanagementSystem.dtos.responses.userResponses.LoginResponse;
 import com.passwordmanagementSystem.exception.InvalidDetailsException;
 import com.passwordmanagementSystem.service.SitePasswordService;
 import com.passwordmanagementSystem.service.UserService;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api")
 @Slf4j
 @ControllerAdvice
 public class UserController {
@@ -29,7 +30,6 @@ UserService service;
 
 
 @PostMapping("/createPasswordAccount")
-
     public ResponseEntity<?> accountCreationResponse(@Validated @RequestBody UserRequest createAccount){
 //    log.info(createAccount.toString());
     try{
@@ -42,14 +42,15 @@ UserService service;
 
 @PostMapping("/user/login")
 @ExceptionHandler(value = InvalidDetailsException.class)
-    public ResponseEntity<?> login(@Validated @RequestBody LoginDetails details){
+    public ResponseEntity<?> login(@RequestBody LoginDetails details){
+    return new ResponseEntity<>(service.login(details),HttpStatus.OK);
 //    log.info(createAccount.toString());
-    try{
-        return new ResponseEntity<>(service.login(details), HttpStatus.FOUND);
-    }
-    catch(InvalidDetailsException ex){
-        return new ResponseEntity<>(new ApiResponse(false, ex.getMessage()), HttpStatus.NOT_ACCEPTABLE);
-    }
+//    try{
+//        return new ResponseEntity<>(service.login(details), HttpStatus.FOUND);
+//    }
+//    catch(InvalidDetailsException ex){
+//        return new ResponseEntity<>(new ApiResponse(false, ex.getMessage()), HttpStatus.NOT_ACCEPTABLE);
+//    }
 }
 
 
@@ -63,7 +64,7 @@ UserService service;
     }
 }
 
-@PatchMapping()
+@PatchMapping("/updateUserAccount")
     public ResponseEntity<?> updateUserAccount(@RequestBody UpdateUserPasswordRequest request){
     try{
         return new ResponseEntity<>(service.updateUserAccount(request), HttpStatus.OK);
@@ -73,7 +74,7 @@ UserService service;
     }
 }
 
-    @GetMapping
+    @GetMapping("/getAll")
     public ResponseEntity<?> findAll(){
         try{
             return new ResponseEntity<>(service.findAll(), HttpStatus.FOUND);

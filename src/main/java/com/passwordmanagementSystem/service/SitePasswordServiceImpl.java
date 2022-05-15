@@ -34,30 +34,26 @@ public class SitePasswordServiceImpl implements SitePasswordService{
     @Override
     public PasswordResponse createAccount(Password request) {
         WebsitePassword password1 = new WebsitePassword();
+        PasswordResponse response = new PasswordResponse();
         password1.setUrl(request.getUrl());
         password1.setWebsiteUserName(request.getUsername());
-        password1.setWebsitePassword(request.getSitePassword());
+//        password1.setWebsitePassword(request.getSitePassword());
 
         Optional<User> user = userRepo.findById(request.getEmail());
-        boolean userIsValid=user.isPresent() && Objects.equals(request.getUserPassword(),
-                user.get().getUserPassword());
+        boolean userIsValid=user.isPresent() && user.get().isLoggedIn();
 //        if (user.isPresent()&& sitePassword.findByUrl(request.getUrl()).isPresent()){
 //            sitePassword.deleteByUrl(request.getUrl());
 //        }
         if(userIsValid ) {
-            user.get().setLoggedIn(true);
+            WebsitePassword savedPassword = sitePassword.save(password1);
+            user.get().getPasswords().add(savedPassword);
+            userRepo.save(user.get());
+
+            response.setPassword(savedPassword.getWebsitePassword());
+            response.setUsername(savedPassword.getWebsiteUserName());
+            response.setUrl(savedPassword.getUrl());
+
         }
-
-         WebsitePassword savedPassword= sitePassword.save(password1);
-        user.get().getPasswords().add(savedPassword);
-        userRepo.save(user.get());
-
-         PasswordResponse response = new PasswordResponse();
-         response.setPassword(savedPassword.getWebsitePassword());
-         response.setUsername(savedPassword.getWebsiteUserName());
-         response.setUrl(savedPassword.getUrl());
-
-
         return response;
     }
 
@@ -69,10 +65,9 @@ public class SitePasswordServiceImpl implements SitePasswordService{
     @Override
     public FindPassword findPasswordByUrl(String url, LoginDetails details) {
         Optional<User> user = userRepo.findById(details.getEmail());
-            boolean userIsValid = user.isPresent() && Objects.equals(user.get().getUserPassword(),
-                    details.getPassword());
+            boolean userIsValid = user.isPresent() && user.get().isLoggedIn();
             if(userIsValid) {
-                user.get().setLoggedIn(true);
+
                 List<WebsitePassword> passwordToBeFound = user.get().getPasswords();
                 for (WebsitePassword passwords : passwordToBeFound) {
                     if (Objects.equals(passwords.getUrl(), url)) {
@@ -90,8 +85,8 @@ public class SitePasswordServiceImpl implements SitePasswordService{
     public DeleteResponse deletePassword(String url,String email) {
         Optional<User> user = userRepo.findById(email);
         Optional<WebsitePassword> password = sitePassword.findByUrl(url);
-        if (user.isPresent()&&  password.isPresent()){
-            user.get().setLoggedIn(true);
+        if (user.isPresent()&&  password.isPresent()&&user.get().isLoggedIn()){
+
             List<WebsitePassword> passwordToBeFound = user.get().getPasswords();
             log.info(String.valueOf(passwordToBeFound));
             for (WebsitePassword passwords : passwordToBeFound) {
@@ -116,16 +111,18 @@ public class SitePasswordServiceImpl implements SitePasswordService{
     @Override
     public UpdatePasswordResponse updatePassword(UpdatePassword updatePassword, String email) {
         Optional<User> user = userRepo.findById(email);
-
         Optional<WebsitePassword> passwordFound = sitePassword.findByUrl(updatePassword.getUrl());
-        if(passwordFound.isPresent()&& user.isPresent()) {
+
+        if(passwordFound.isPresent()&& user.isPresent()&& user.get().isLoggedIn()) {
                      sitePassword.deleteByUrl(passwordFound.get().getUrl());
 
-            user.get().setLoggedIn(true);
+
             List<WebsitePassword> passwordToBeFound = user.get().getPasswords();
             for (WebsitePassword passwords : passwordToBeFound) {
                 if (Objects.equals(passwords.getUrl(), updatePassword.getUrl())) {
+
                     user.get().getPasswords().remove(passwords);
+                    userRepo.save(user.get());
                     passwordFound.get().setWebsitePassword(updatePassword.getNewPassword());
 
                     passwordFound.get().setUrl(updatePassword.getUrl());

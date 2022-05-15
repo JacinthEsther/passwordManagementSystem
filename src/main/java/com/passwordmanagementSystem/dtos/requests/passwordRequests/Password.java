@@ -11,6 +11,6 @@ public class Password {
     private String sitePassword;
     private String url;
     private String email;
-    private String userPassword;
+//    private String userPassword;
 
 }
